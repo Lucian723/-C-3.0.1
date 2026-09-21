@@ -55,5 +55,6 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
-  "C_Cpp_Runner.msvcSecureNoWarnings": false
+  "C_Cpp_Runner.msvcSecureNoWarnings": false,
+  "cmake.sourceDirectory": "E:/Conntrol/code/HERO_C 2.1.1 - (old)/HERO_C 2.1.1 - (old)/eigen-3.4.0"
 }

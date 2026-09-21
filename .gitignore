@@ -16,7 +16,6 @@ MDK-ARM/startup_stm32f103xb.lst
 *.crf
 *.d
 *.dep
-*.axf
 *.hex
 *.map
 *.htm

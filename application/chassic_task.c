@@ -550,9 +550,9 @@ static void chassic_mode_set(chassis *mode)
 	
 	else if(switch_is_up(mode->chassis_RC->rc.s[s_right])) //сриох╚©╙
 	{		
-//		 gimbal_ctrl.gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_GYRO;     
+		 gimbal_ctrl.gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_GYRO;     
 		 mode->chassis_mode = chassic_follow_chassic_yaw;           		
-		gimbal_ctrl.gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_VISUAL;
+//		gimbal_ctrl.gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_VISUAL;
 	}
 //	else  if(mode->chassis_RC->key.v& KEY_PRESSED_OFFSET_CTRL)  //
 //	{
