@@ -19,6 +19,8 @@
   */
 
 #include "remote_control.h"
+#include "i6x.h"
+#include "remote_config.h"
 
 #include "main.h"
 
@@ -55,6 +57,22 @@ static void sbus_to_rc(volatile const uint8_t *sbus_buf, RC_ctrl_t *rc_ctrl);
 //remote control data 
 //遥控器控制变量
 RC_ctrl_t rc_ctrl;
+
+#if REMOTE_CONTROL_TYPE == REMOTE_TYPE_I6X
+#define ACTIVE_RC_FRAME_LENGTH I6X_FRAME_LENGTH
+static void decode_remote_frame(const uint8_t *data)
+{
+    /* Observation only: do not write DT7 control data. */
+    i6x_receive(data);
+}
+#else
+#define ACTIVE_RC_FRAME_LENGTH RC_FRAME_LENGTH
+static void decode_remote_frame(const uint8_t *data)
+{
+    sbus_to_rc(data, &rc_ctrl);
+}
+#endif
+
 //接收原始数据，为18个字节，给了36个字节长度，防止DMA传输越界
 static uint8_t sbus_rx_buf[2][SBUS_RX_BUF_NUM];
 
@@ -185,9 +203,9 @@ void USART3_IRQHandler(void)
             //使能DMA
             __HAL_DMA_ENABLE(&hdma_usart3_rx);
 
-            if(this_time_rx_len == RC_FRAME_LENGTH)
+            if(this_time_rx_len == ACTIVE_RC_FRAME_LENGTH)
             {
-                sbus_to_rc(sbus_rx_buf[0], &rc_ctrl);
+                decode_remote_frame(sbus_rx_buf[0]);
                 //记录数据接收时间
 //                detect_hook(DBUS_TOE);
                 //sbus_to_usart1(sbus_rx_buf[0]);
@@ -216,10 +234,10 @@ void USART3_IRQHandler(void)
             //使能DMA
             __HAL_DMA_ENABLE(&hdma_usart3_rx);
 
-            if(this_time_rx_len == RC_FRAME_LENGTH)
+            if(this_time_rx_len == ACTIVE_RC_FRAME_LENGTH)
             {
                 //处理遥控器数据
-                sbus_to_rc(sbus_rx_buf[1], &rc_ctrl);
+                decode_remote_frame(sbus_rx_buf[1]);
                 //记录数据接收时间
 //                detect_hook(DBUS_TOE);
                 //sbus_to_usart1(sbus_rx_buf[1]);

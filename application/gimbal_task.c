@@ -970,7 +970,7 @@ void gimbal_loop(gimbal *loop)
 		if(gimbal_test_switch == 2){
 			if(gimbal_yaw_visual == 0 )
 			{
-				CAN_cmd_gimbal(-loop->gimbal_yaw_motor.current_set, loop->gimbal_pitch_motor.current_set, 0, 0);
+				CAN_cmd_gimbal(-loop->gimbal_yaw_motor.current_set, loop->gimbal_pitch_motor.current_set, shoot.MOTOR_SPEED1.out, 0);
 			}
 			else
 			{

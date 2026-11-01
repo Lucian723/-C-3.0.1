@@ -19,6 +19,7 @@
   */
 
 #include "CAN_receive.h"
+#include "Motor_VESC.h"
 
 #include "cmsis_os.h"
 #include "MOTOR_ANGLE_PID.h"
@@ -51,6 +52,8 @@ static uint8_t              chassis_can_send_data[8];
 static CAN_TxHeaderTypeDef  gimbal_shoot_tx_message;                         //can2µÄ0~3ºÅidÊý¾Ý
 static uint8_t              gimbal_shoot_can_send_data[8];
 		   
+				Motor_StructTypedef Motor_VESC = {0};
+		
 /**
   * @brief          hal CAN fifo call back, receive motor data
   * @param[in]      hcan, the point to CAN handle
@@ -135,19 +138,29 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 					
 					 break;
 				}
-        case CAN_3508_shoot1://3
+        case Shoot_Fric_VESC1_Status1_Feedback_CAN_ID://3
 				{
-					get_motor_measure(&motor_chassis[7], rx_data_2);
+//					get_motor_measure(&motor_chassis[7], rx_data_2);
+					Motor_VESC_Storage_Status_1(rx_data_2, &Motor_VESC.Fric1, 7);
 					
 					 break;
 				}
-        case CAN_3508_shoot2://4
+        case Shoot_Fric_VESC2_Status1_Feedback_CAN_ID://4
 				{
-					get_motor_measure(&motor_chassis[8], rx_data_2);
+//					get_motor_measure(&motor_chassis[8], rx_data_2);
+					Motor_VESC_Storage_Status_1(rx_data_2, &Motor_VESC.Fric2, 7);
 			
 					 break;
 				}
 
+								case Shoot_Fric_VESC3_Status1_Feedback_CAN_ID://3
+				{
+//					get_motor_measure(&motor_chassis[10], rx_data_2);
+					Motor_VESC_Storage_Status_1(rx_data_2, &Motor_VESC.Fric3, 7);
+					
+					 break;
+				}
+				
         case CAN_YAW_MOTOR_ID:
 				{
 					get_motor_measure(&motor_chassis[4], rx_data_2);
@@ -320,6 +333,22 @@ void CAN_cmd_shoot(int16_t motor1, int16_t motor2, int16_t motor3, int16_t motor
     HAL_CAN_AddTxMessage(&GIMBAL_CAN, &gimbal_shoot_tx_message, gimbal_shoot_can_send_data, &send_mail_box);
 }
 
+void CAN_cmd_shoot1(CAN_HandleTypeDef *hcan,uint32_t ID, uint8_t *TX_Data, uint8_t Length)
+{
+    uint32_t send_mail_box;
+    gimbal_shoot_tx_message.ExtId = ID;
+    gimbal_shoot_tx_message.IDE = CAN_ID_EXT;
+    gimbal_shoot_tx_message.RTR = CAN_RTR_DATA;
+    gimbal_shoot_tx_message.DLC = Length;
+		uint32_t OverTick = 0;
+    while(HAL_CAN_GetTxMailboxesFreeLevel(hcan) == 0)
+    {
+        OverTick++;
+        if(OverTick > 1000) break;
+    }
+
+    HAL_CAN_AddTxMessage(&GIMBAL_CAN, &gimbal_shoot_tx_message, TX_Data, &send_mail_box);
+}
 
 
 /**

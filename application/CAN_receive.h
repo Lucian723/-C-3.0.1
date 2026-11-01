@@ -22,9 +22,18 @@
 #define CAN_RECEIVE_H
 
 #include "struct_typedef.h"
+#include "Motor_VESC.h"
 
 #define CHASSIS_CAN hcan1
 #define GIMBAL_CAN hcan2
+
+#define Shoot_Fric_VESC1_VESCID                             101
+#define Shoot_Fric_VESC1_Status1_Feedback_CAN_ID        (0x900+Shoot_Fric_VESC1_VESCID)
+#define Shoot_Fric_VESC2_VESCID                             102
+#define Shoot_Fric_VESC2_Status1_Feedback_CAN_ID        (0x900+Shoot_Fric_VESC2_VESCID)
+#define Shoot_Fric_VESC3_VESCID                             103
+#define Shoot_Fric_VESC3_Status1_Feedback_CAN_ID        (0x900+Shoot_Fric_VESC3_VESCID)
+
 
 /* CAN send and receive ID */
 typedef enum
@@ -35,7 +44,7 @@ typedef enum
     CAN_3508_M3_ID = 0x203,
     CAN_3508_M4_ID = 0x204,
     
-	  CAN_TRIGGER_MOTOR_ID2 = 0x202,//拨盘电机
+	  CAN_TRIGGER_MOTOR_ID2 = 0x207,//拨盘电机
 	  CAN_3508_shoot1= 0x203,            //can2
 	  CAN_3508_shoot2= 0x204,
     CAN_YAW_MOTOR_ID = 0x205,
@@ -54,6 +63,16 @@ typedef enum
 
 //超级电容反馈文报ID
 } can_msg_id_e;
+
+typedef struct
+{
+    
+    
+    Motor_Data_StructTypeDef Fric1;
+    Motor_Data_StructTypeDef Fric2;
+		Motor_Data_StructTypeDef Fric3;
+	
+} Motor_StructTypedef;
 
 
 typedef struct
@@ -136,6 +155,7 @@ extern void CAN_cmd_chassis(int16_t motor1, int16_t motor2, int16_t motor3, int1
   * @retval         none
   */
 extern void CAN_cmd_shoot(int16_t motor1, int16_t motor2, int16_t motor3, int16_t motor4);
+extern void CAN_cmd_shoot1(CAN_HandleTypeDef *hcan,uint32_t ID, uint8_t *TX_Data, uint8_t Length);
 
 /**
   * @brief          return the yaw 6020 motor data point
@@ -203,5 +223,5 @@ extern const motor_measure_t *get_trigger2_motor_measure_point(void);
 //超级电容控制函数与返回指针
 extern void CAN_cmd_supercap(int16_t temPower);
 extern const super_cap_measure_t *get_super_cap_measure_point(uint8_t i);
-
+extern  Motor_StructTypedef Motor_VESC;
 #endif

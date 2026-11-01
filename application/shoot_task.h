@@ -6,6 +6,7 @@
 #include "main.h"
 #include "remote_control.h"
 #include "chassic_task.h"
+#include "i6x.h"
 
 #define upgrade_shoot_level          KEY_PRESSED_OFFSET_B    //射速调整等级按键
 
@@ -57,6 +58,8 @@
 #define set_angle_err  500.0f        //设置角度和实际角度差值允许值
 
 #define tigger_blocked_count_judgment 30
+#define Fric_Radius 0.03f
+#define Fric_RPM_to_m_s     (2*PI*Fric_Radius/60.0f)
 
 
 
@@ -98,6 +101,7 @@ typedef struct
 	uint32_t tigger_blocked_count;      //堵转判断计数值
 	uint32_t last_count;                //堵转上次计数值
 	const RC_ctrl_t *shoot_RC;             //遥控器值     
+	const i6x_ctrl_t *shoot_rc;
 	float LAST_ANGLE;                   //上次角度存值
   int KEY;
 	uint16_t *shoot_cooling_rate;        //射击冷却速度

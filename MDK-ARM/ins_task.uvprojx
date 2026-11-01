@@ -1174,6 +1174,26 @@
               <FileType>5</FileType>
               <FilePath>..\application\DWT.h</FilePath>
             </File>
+            <File>
+              <FileName>motor_VESC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\motor_VESC.c</FilePath>
+            </File>
+            <File>
+              <FileName>motor_VESC.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\application\motor_VESC.h</FilePath>
+            </File>
+            <File>
+              <FileName>i6x.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\i6x.c</FilePath>
+            </File>
+            <File>
+              <FileName>i6x.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\application\i6x.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

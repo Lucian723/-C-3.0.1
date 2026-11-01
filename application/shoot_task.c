@@ -6,10 +6,16 @@
 #include "tim.h"
 #include "user_lib.h"
 #include "protocol.h"
+#include "Motor_VESC.h"
+#include "i6x.h"
+extern CAN_HandleTypeDef hcan2;
 uint32_t speed_tick = 0;
 uint32_t mag_tick = 0;
 uint8_t  mag_flag = 0 ;
 shoot_all shoot;
+float Shoot_Fric_First_Speed1   = 36;
+float Shoot_Fric_First_Speed2   = 36;
+float Shoot_Fric_First_Speed3   = 36;
 
 int shoot_speed[2][2] = {
                          {motor1_speed1,motor2_speed1},
@@ -96,6 +102,7 @@ void shoot_init()
 	  shoot.motor2_data=get_shoot_motor_measure_point(8);         //摩擦轮2
 	
 	  shoot.shoot_RC=get_remote_control_point(); //获取遥控器指针
+		shoot.shoot_rc=get_i6x_point();
 	  const fp32 PID_angle[4]={Trigger_angle_PID_P,Trigger_angle_PID_I,Trigger_angle_PID_D,Trigger_angle_PID_F};	//P,I,D    角度环
     const fp32 PID_speed[4]={Trigger_speed_PID_P,Trigger_speed_PID_I,Trigger_speed_PID_D,Trigger_speed_PID_F};	//P,I,D    速度环
 		
@@ -317,6 +324,10 @@ void shoot_mode_behavior(void)
 		{
 			 PID_calc(&shoot.motor1, shoot.motor1_data->speed_rpm,  shoot_speed[shoot.speed_level][0]);//速度环
 	     PID_calc(&shoot.motor2, shoot.motor2_data->speed_rpm,  -shoot_speed[shoot.speed_level][1]);//速度环		
+			
+		Motor_VESC_Set_ERPM(&GIMBAL_CAN, Shoot_Fric_VESC1_VESCID, -Shoot_Fric_First_Speed1/Fric_RPM_to_m_s*7);
+		Motor_VESC_Set_ERPM(&GIMBAL_CAN, Shoot_Fric_VESC2_VESCID, -Shoot_Fric_First_Speed2/Fric_RPM_to_m_s*7);
+		Motor_VESC_Set_ERPM(&GIMBAL_CAN, Shoot_Fric_VESC3_VESCID, Shoot_Fric_First_Speed3/Fric_RPM_to_m_s*7);
 		}
 		else 
 		{
@@ -325,7 +336,7 @@ void shoot_mode_behavior(void)
 		   shoot.MOTOR_SPEED1.out = 0;
 		}
 		//usb_printf("%s\n","%s\n", shoot.motor1_data->speed_rpm, shoot.motor1_data->speed_rpm);
-    CAN_cmd_shoot(0,shoot.MOTOR_SPEED1.out , shoot.motor1.out , shoot.motor2.out);	//发送控制电流
+//    CAN_cmd_shoot(0,shoot.MOTOR_SPEED1.out , shoot.motor1.out , shoot.motor2.out);	//发送控制电流
     //CAN_cmd_shoot(0,shoot.MOTOR_SPEED1.out , 0 , 0);	//发送控制电流
 		
 	

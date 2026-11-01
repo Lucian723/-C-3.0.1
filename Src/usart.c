@@ -19,6 +19,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usart.h"
+#include "remote_config.h"
 
 /* USER CODE BEGIN 0 */
 
@@ -76,8 +77,12 @@ void MX_USART3_UART_Init(void)
   /* USER CODE END USART3_Init 1 */
   huart3.Instance = USART3;
   huart3.Init.BaudRate = 100000;
-  huart3.Init.WordLength = UART_WORDLENGTH_8B;
+  huart3.Init.WordLength = UART_WORDLENGTH_9B; // 8 data bits + parity
+#if REMOTE_CONTROL_TYPE == REMOTE_TYPE_I6X
+  huart3.Init.StopBits = UART_STOPBITS_2;
+#else
   huart3.Init.StopBits = UART_STOPBITS_1;
+#endif
   huart3.Init.Parity = UART_PARITY_EVEN;
   huart3.Init.Mode = UART_MODE_TX_RX;
   huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
